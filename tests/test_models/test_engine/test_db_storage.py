@@ -86,3 +86,28 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    """ AirBnB_clone_v3 tests """
+
+    def test_get(self):
+        """Test the get method"""
+        state = models.storage.get(State, self.state.id)
+        self.assertIsNotNone(state)
+        self.assertEqual(state.id, self.state.id)
+        self.assertEqual(state.name, "California")
+
+        city = models.storage.get(City, self.city.id)
+        self.assertIsNotNone(city)
+        self.assertEqual(city.id, self.city.id)
+        self.assertEqual(city.name, "San Francisco")
+
+    def test_count(self):
+        """Test the count method"""
+        state_count = models.storage.count(State)
+        self.assertEqual(state_count, 1)
+
+        city_count = models.storage.count(City)
+        self.assertEqual(city_count, 1)
+
+        total_count = models.storage.count()
+        self.assertGreaterEqual(total_count, 2)
