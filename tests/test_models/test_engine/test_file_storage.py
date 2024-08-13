@@ -18,6 +18,7 @@ import json
 import os
 import pep8
 import unittest
+from models import storage
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -113,3 +114,29 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_get_fs(self):
+        """ Test get methode to retrieve object based for file storage """
+        storage = FileStorage()
+        s1 = State(name="California")
+        storage.new(s1)
+        storage.save()
+        result = storage.get(State, s1.id)
+        self.assertEqual(result, s1)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count_fs(self):
+        """ Test count method for counting objects for file storage """
+        storage = FileStorage()
+        st1 = State(name="New York")
+        st2 = State(name="Arizona")
+        ct = City(name="Phoenix", state_id=st2.id)
+        storage.new(st1)
+        storage.new(st2)
+        storage.new(ct)
+        storage.save()
+        all_objs = storage.count()
+        self.assertEqual(all_objs, len(storage.all()))
+        city_objects = storage.count(City)
+        self.assertEqual(city_objects, len(storage.all(City)))
